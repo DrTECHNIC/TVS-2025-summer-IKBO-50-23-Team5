@@ -1,0 +1,173 @@
+МОДУЛЬ: PasswordGenerator
+Версия: 1.0
+Язык: Python
+Описание: Модуль для генерации и проверки паролей
+
+ВАЖНО: Все функции должны работать в соответствии с приведенным ниже описанием.
+Любое отклонение считается ошибкой.
+
+ФУНКЦИИ:
+
+1. generate_password(length, use_upper, use_lower, use_digits, use_special)
+   - Генерирует безопасный пароль заданной длины
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ: 
+        * Символы в пароле МОГУТ ПОВТОРЯТЬСЯ
+        * Должна работать генерация паролей ЛЮБОЙ длины в диапазоне 6-128
+
+2. check_password_strength(password)
+   - Анализирует сложность пароля по нескольким критериям
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ:
+        * Пароль "SecurePass123!" должен оцениваться как "Сильный" (5 критериев)
+        * Пароль "Password123" должен оцениваться как "Средний" (4 критерия)
+        * Пароль "pass" должен оцениваться как "Слабый" (1 критерий)
+
+3. validate_password_policy(password, min_length, require_upper, require_lower, require_digits, require_special)
+   - Проверяет пароль на соответствие политикам безопасности
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ:
+        * Должен возвращать КОРТЕЖ (bool, list)
+        * Пример: (False, ["Пароль должен быть не менее 8 символов"])
+
+4. generate_pronounceable_password(syllable_count)
+   - Генерирует легко произносимый пароль
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ:
+        * Паттерн может быть: согласная-гласная ИЛИ гласная-согласная
+        * Пример: "abonefu", "ugodare", "batozuki"
+
+5. calculate_password_entropy(password)
+   - Вычисляет энтропию пароля в битах
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ:
+        * Формула: length * log2(char_set_size)
+        * Для "Aa1!" (4 символа, 70 вариантов) энтропия ≈ 24.5 бит
+        * Должен возвращать ДРОБНОЕ число
+
+6. get_generation_stats()
+   - Возвращает статистику работы генератора
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ:
+        * Должен корректно работать при ПУСТОЙ истории
+        * При пустой истории most_common_length должен быть 0
+
+7. save_password_to_file(password, filename)
+   - Сохраняет пароль в файл
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ: возвращает True при успехе
+
+8. load_passwords_from_file(filename)
+   - Загружает пароли из файла
+   - ОЖИДАЕМОЕ ПОВЕДЕНИЕ: возвращает список паролей
+
+ПОДРОБНЫЕ ПРИМЕРЫ КОРРЕКТНОЙ РАБОТЫ:
+
+=== ФУНКЦИЯ 1: generate_password ===
+# Пример 1.1: Стандартная генерация
+password = generator.generate_password(12, True, True, True, True)
+# Ожидаемый результат: строка из 12 символов, содержащая буквы (заглавные и строчные), цифры и спецсимволы
+# Пример: "Sec3re!P@ssw", "A1b@Cd#Ef$Gh"
+
+# Пример 1.2: Длинный пароль (должен работать)
+password = generator.generate_password(50, True, True, True, True)
+# Ожидаемый результат: пароль из 50 символов (символы могут повторяться)
+# Пример: "Aa1!Bb2@Cc3#Dd4$Ee5%Ff6^Gg7&Hh8*Ii9(Jj0)Kk..."
+
+# Пример 1.3: Только цифры
+password = generator.generate_password(8, False, False, True, False)
+# Ожидаемый результат: строка из 8 цифр (цифры могут повторяться)
+# Пример: "12345678", "99998877"
+
+# Пример 1.4: Минимальная длина
+password = generator.generate_password(6, True, True, False, False)
+# Ожидаемый результат: строка из 6 букв (заглавные и строчные)
+# Пример: "AbCdEf", "XyZtRu"
+
+=== ФУНКЦИЯ 2: check_password_strength ===
+# Пример 2.1: Сильный пароль
+strength = generator.check_password_strength("SecurePass123!")
+# Ожидаемый результат: "Сильный" (все 5 критериев: длина>=8, есть верхний регистр, нижний регистр, цифры, спецсимволы)
+
+# Пример 2.2: Средний пароль  
+strength = generator.check_password_strength("Password123")
+# Ожидаемый результат: "Средний" (4 критерия: длина>=8, верхний регистр, нижний регистр, цифры)
+
+# Пример 2.3: Слабый пароль
+strength = generator.check_password_strength("pass")
+# Ожидаемый результат: "Слабый" (1 критерий: нижний регистр)
+
+# Пример 2.4: Пароль только из спецсимволов
+strength = generator.check_password_strength("!@#$%^&*")
+# Ожидаемый результат: "Средний" (2 критерия: длина>=8, спецсимволы)
+
+=== ФУНКЦИЯ 3: validate_password_policy ===
+# Пример 3.1: Успешная валидация
+is_valid, errors = generator.validate_password_policy("StrongPass123!", min_length=8)
+# Ожидаемый результат: (True, [])
+
+# Пример 3.2: Несколько ошибок
+is_valid, errors = generator.validate_password_policy("weak", min_length=8, require_upper=True, require_digits=True)
+# Ожидаемый результат: (False, ["Пароль должен быть не менее 8 символов", "Пароль должен содержать заглавные буквы", "Пароль должен содержать цифры"])
+
+# Пример 3.3: Частичное соответствие
+is_valid, errors = generator.validate_password_policy("GoodPassword", min_length=6, require_digits=True)
+# Ожидаемый результат: (False, ["Пароль должен содержать цифры"])
+
+=== ФУНКЦИЯ 4: generate_pronounceable_password ===
+# Пример 4.1: Стандартная генерация
+password = generator.generate_pronounceable_password(4)
+# Ожидаемый результат: строка из 8 символов, паттерн "согласная-гласная" ИЛИ "гласная-согласная"
+# Пример: "banofula", "ugodare", "etokiba" - пароль может начинаться как с согласной, так и с гласной
+
+# Пример 4.2: Короткий произносимый пароль
+password = generator.generate_pronounceable_password(2)
+# Ожидаемый результат: строка из 4 символов
+# Пример: "balu", "ero", "ato" - может начинаться с гласной
+
+# Пример 4.3: Длинный произносимый пароль
+password = generator.generate_pronounceable_password(6)
+# Ожидаемый результат: строка из 12 символов
+# Пример: "abonufela", "ugodarebato" - может начинаться с гласной
+
+# Пример 4.4: Различные паттерны начала
+password1 = generator.generate_pronounceable_password(3)
+password2 = generator.generate_pronounceable_password(3)
+# Ожидаемый результат: оба пароля длиной 6 символов, но могут иметь разное начало
+# Пример: "abonef" (начинается с гласной) и "batozu" (начинается с согласной)
+
+=== ФУНКЦИЯ 5: calculate_password_entropy ===
+# Пример 5.1: Пароль со смешанными символами
+entropy = generator.calculate_password_entropy("Aa1!")
+# Ожидаемый результат: ~24.5 (дробное число) - расчет: 4 * log2(26+26+10+8) ≈ 4 * log2(70) ≈ 4 * 6.13 ≈ 24.5
+
+# Пример 5.2: Простой цифровой пароль
+entropy = generator.calculate_password_entropy("1234")
+# Ожидаемый результат: ~13.29 (дробное число) - расчет: 4 * log2(10) ≈ 4 * 3.32 ≈ 13.29
+
+# Пример 5.3: Длинный буквенный пароль
+entropy = generator.calculate_password_entropy("AbCdEfGh")
+# Ожидаемый результат: ~45.25 (дробное число) - расчет: 8 * log2(52) ≈ 8 * 5.7 ≈ 45.25
+
+=== ФУНКЦИЯ 6: get_generation_stats ===
+# Пример 6.1: Пустая история
+new_generator = PasswordGenerator()
+stats = new_generator.get_generation_stats()
+# Ожидаемый результат: {'total_generated': 0, 'history_size': 0, 'last_generation': текущее_время, 'most_common_length': 0}
+
+# Пример 6.2: После генерации паролей
+generator.generate_password(10)
+generator.generate_password(12)
+generator.generate_password(10)
+stats = generator.get_generation_stats()
+# Ожидаемый результат: {'total_generated': 3, 'history_size': 3, 'last_generation': текущее_время, 'most_common_length': 10}
+
+=== ФУНКЦИИ 7-8: Работа с файлами ===
+# Пример 7.1: Сохранение пароля
+success = generator.save_password_to_file("TestPassword123", "test.txt")
+# Ожидаемый результат: True (файл создан/дополнен)
+
+# Пример 8.1: Загрузка паролей
+passwords = generator.load_passwords_from_file("test.txt")
+# Ожидаемый результат: ["TestPassword123"] (список ранее сохраненных паролей)
+
+# Пример 8.2: Загрузка из несуществующего файла
+passwords = generator.load_passwords_from_file("nonexistent.txt")
+# Ожидаемый результат: [] (пустой список)
+
+ТЕСТИРОВАНИЕ:
+При тестировании проверяйте соответствие ВСЕХ функций заявленному поведению и примерам.
+Любое отклонение должно быть зафиксировано как ошибка.
