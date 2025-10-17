@@ -22,7 +22,7 @@ def display_tasks(task_list):
 
 # добавляет новую задачу в список
 def add_task(task_list, description):
-    if ",  " in description:
+    if ", " in description:
         print("описание задачи не может содержать разделители!") 
     elif len(description) != 0:
         task_list.append({"desc": str(description), "done": 0}) 

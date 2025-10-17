@@ -1,5 +1,5 @@
 import pytest
-from Astakhov_Test6 import PasswordGenerator
+from Sergei_Mutant5 import PasswordGenerator
 import re
 import string
 import os

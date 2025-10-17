@@ -3,7 +3,7 @@ import importlib.util
 import sys
 
 # === Динамическая загрузка класса Matrix из 2prac.py ===
-spec = importlib.util.spec_from_file_location("MatrixModule", "./Sergei_with_errors.py")
+spec = importlib.util.spec_from_file_location("MatrixModule", "./Ivan_Mutant5.py")
 module = importlib.util.module_from_spec(spec)
 sys.modules["MatrixModule"] = module
 spec.loader.exec_module(module)
