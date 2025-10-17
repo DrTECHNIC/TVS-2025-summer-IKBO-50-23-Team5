@@ -1,5 +1,6 @@
 import random
 import string
+import hashlib
 import math
 from datetime import datetime
 
@@ -11,6 +12,7 @@ class PasswordGenerator:
 
     def generate_password(self, length=12, use_upper=True, use_lower=True,
                           use_digits=True, use_special=True):
+        """1. Генерирует пароль по заданным параметрам"""
         if length < 6:
             raise ValueError("Длина пароля должна быть не менее 6 символов")
         chars = ""
@@ -30,6 +32,7 @@ class PasswordGenerator:
         return password
 
     def check_password_strength(self, password):
+        """2. Проверяет сложность пароля - С ОШИБКОЙ"""
         score = 0
         if len(password) >= 8: score += 1
         if any(c.isupper() for c in password): score += 1
@@ -45,6 +48,7 @@ class PasswordGenerator:
 
     def validate_password_policy(self, password, min_length=8, require_upper=True,
                                  require_lower=True, require_digits=True, require_special=True):
+        """3. Проверяет соответствие пароля политике безопасности"""
         errors = []
         if len(password) < min_length:
             errors.append(f"Пароль должен быть не менее {min_length} символов")
@@ -59,6 +63,7 @@ class PasswordGenerator:
         return len(errors) == 0, errors
 
     def generate_pronounceable_password(self, syllable_count=4):
+        """4. Генерирует произносимый пароль"""
         vowels = 'aeiou'
         consonants = 'bcdfghjklmnpqrstvwxyz'
         password = ""
@@ -75,6 +80,7 @@ class PasswordGenerator:
         return password
 
     def calculate_password_entropy(self, password):
+        """5. Вычисляет энтропию пароля"""
         char_set_size = 0
         if any(c.islower() for c in password): char_set_size += 26
         if any(c.isupper() for c in password): char_set_size += 26
@@ -84,6 +90,7 @@ class PasswordGenerator:
         return entropy
 
     def get_generation_stats(self):
+        """6. Возвращает статистику генерации"""
         most_common_length = 0
         if self.history:
             lengths = [len(pwd) for pwd in self.history]
@@ -96,6 +103,7 @@ class PasswordGenerator:
         }
 
     def save_password_to_file(self, password, filename="passwords.txt"):
+        """7. Сохраняет пароль в файл"""
         try:
             with open(filename, 'a') as f:
                 f.write(password + '\n')
@@ -104,6 +112,7 @@ class PasswordGenerator:
             return False
 
     def load_passwords_from_file(self, filename="passwords.txt"):
+        """8. Загружает пароли из файла"""
         try:
             with open(filename, 'r') as f:
                 return [line.strip() for line in f.readlines()]

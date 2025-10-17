@@ -1,0 +1,3 @@
+generate_password() - Ошибка вывода, данные могут не попадаться(< 1)
+check_password_strength() - expected_strength и strength отличаются 
+calculate_password_entropy() - Неправильный подсчет энтропии
