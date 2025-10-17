@@ -43,7 +43,7 @@ class Matrix:
 
     @staticmethod
     def sum(matrix1, matrix2) -> "Matrix":
-        # Проверка на пустые матрицы
+        # Проверка на пустые матрицы - ДОБАВЛЕНО ПЕРВОЙ
         if not matrix1.matrix_v or not matrix2.matrix_v:
             raise ValueError("Одна из матриц пуста")
         
@@ -92,16 +92,20 @@ class Matrix:
         if len(matrix1.matrix_v[0]) != len(matrix2.matrix_v):
             raise ValueError(f"Несовместимые размеры для умножения: {matrix1.size} и {matrix2.size}")
         
-        # Проверка, что все элементы являются числами
+        # Проверка, что все элементы являются числами - ИСПРАВЛЕНО сообщение
         for i in range(len(matrix1.matrix_v)):
             for j in range(len(matrix1.matrix_v[0])):
-                if not isinstance(matrix1.matrix_v[i][j], (int, float)):
-                    raise TypeError(f"Элемент matrix1[{i}][{j}] = {matrix1.matrix_v[i][j]} не является числом")
+                try:
+                    matrix1.matrix_v[i][j] = float(matrix1.matrix_v[i][j])
+                except (ValueError, TypeError):
+                    raise TypeError("Элементы матриц должны быть числами")  # ИСПРАВЛЕНО сообщение
         
         for i in range(len(matrix2.matrix_v)):
             for j in range(len(matrix2.matrix_v[0])):
-                if not isinstance(matrix2.matrix_v[i][j], (int, float)):
-                    raise TypeError(f"Элемент matrix2[{i}][{j}] = {matrix2.matrix_v[i][j]} не является числом")
+                try:
+                    matrix2.matrix_v[i][j] = float(matrix2.matrix_v[i][j])
+                except (ValueError, TypeError):
+                    raise TypeError("Элементы матриц должны быть числами")  # ИСПРАВЛЕНО сообщение
         
         rows1 = len(matrix1.matrix_v)
         cols1 = len(matrix1.matrix_v[0])
